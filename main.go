@@ -4,6 +4,8 @@ import (
   "fmt"
   "os"
   "os/exec"
+
+  "github.com/rdenson/userio"
 )
 
 type gcloudprojectlabels struct {
@@ -50,13 +52,21 @@ func findProject(filter string) gcloudprojects {
 
 func main() {
   kubeConfig := getKubeConfig()
-  fmt.Printf(
+  userio.Write(fmt.Sprintf(
     "your local kubectl configuration references...\n  %d clusters\n  %d contexts\n  %d users\n",
     len(kubeConfig.Clusters),
     len(kubeConfig.Contexts),
     len(kubeConfig.Users),
-  )
+  ))
 
   sortedClusters := sortClustersByActiveness(kubeConfig.Clusters)
-  fmt.Printf("of the clusters known to your local configuration,\n  %d are active\n  %d are inactive\n", len(sortedClusters["active"]), len(sortedClusters["inactive"]))
+  userio.WriteInfo("of the clusters known to your local configuration:")
+  userio.ListElement(fmt.Sprintf(
+    "%d are active",
+    len(sortedClusters["active"]),
+  ))
+  userio.ListElement(fmt.Sprintf(
+    "%d are inactive\n",
+    len(sortedClusters["inactive"]),
+  ))
 }
