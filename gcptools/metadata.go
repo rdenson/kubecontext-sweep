@@ -1,4 +1,4 @@
-package main
+package gcptools
 
 type (
   metadata struct {
